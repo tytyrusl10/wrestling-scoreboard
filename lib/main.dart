@@ -53,6 +53,13 @@ class _TimerPageState extends State<TimerPage> {
     return '${minutes.toString().padLeft(1, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
+  //function to adjust time
+  void _adjustTimer(int seconds) {
+  setState(() {
+    _counter = (_counter + seconds).clamp(0, 420); // Ensure the timer doesn't go below 0 or above 7 minutes
+  });
+}
+
   // String state can be "clock" or "riding"
   void runClock(String state) {
     const oneSec = const Duration(seconds: 1);
@@ -221,7 +228,7 @@ class _TimerPageState extends State<TimerPage> {
           ),
           // Draw a white line horizontally in the middle of the app
           Positioned(
-            top: MediaQuery.of(context).size.height / 2,
+            top: MediaQuery.of(context).size.height / 1.8,
             child: Container(
               height: 1.0,
               width: MediaQuery.of(context).size.width,
@@ -230,10 +237,10 @@ class _TimerPageState extends State<TimerPage> {
           ),
           // Draw a white line vertically from the center of the app to the bottom
           Positioned(
-            top: MediaQuery.of(context).size.height / 2,
+            top: MediaQuery.of(context).size.height / 1.8,
             left: MediaQuery.of(context).size.width / 2,
             child: Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2.2,
               width: 1.0,
               color: Colors.white,
             ),
@@ -243,7 +250,7 @@ class _TimerPageState extends State<TimerPage> {
             bottom: 0,
             left: 0,
             child: Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2.2,
               width: MediaQuery.of(context).size.width / 2,
               color: Colors.blue,
               child: Column(
@@ -288,7 +295,7 @@ class _TimerPageState extends State<TimerPage> {
             bottom: 0,
             right: 0,
             child: Container(
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 2.2,
               width: MediaQuery.of(context).size.width / 2,
               color: Colors.red,
               child: Column(
@@ -333,3 +340,4 @@ class _TimerPageState extends State<TimerPage> {
     );
   }
 }
+
