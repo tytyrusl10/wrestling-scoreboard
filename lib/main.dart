@@ -118,6 +118,7 @@ class _TimerPageState extends State<TimerPage> {
           Positioned(
             top: 5,
             left: MediaQuery.of(context).size.width / 40,
+            
             child: Row(
               children: <Widget>[
                 ElevatedButton(
@@ -136,9 +137,51 @@ class _TimerPageState extends State<TimerPage> {
                   },
                   child: Text('Reset Clock'),
                 ),
-              ],
-            ),
-          ),
+                 ElevatedButton(
+                  onPressed: () {
+                     if (!isCountingDown) {
+                    setState(() {
+                      _adjustTimer(-60); // Subtract 1 minute
+                       });
+                    }
+                },
+              child: Text('-1 min'),
+                ),
+                SizedBox(width: 10), // Add spacing between buttons
+                ElevatedButton(
+                  onPressed: () {
+                    if (!isCountingDown) {
+                    setState(() {
+                      _adjustTimer(-1); // Subtract 1 second
+                       });
+                    }
+                 },
+                child: Text('-1 sec'),
+                ),
+                SizedBox(width: 10), // Add spacing between buttons
+                ElevatedButton(
+                  onPressed: () {
+                     if (!isCountingDown) {
+                    setState(() {
+                      _adjustTimer(1); // add 1 second
+                       });
+                    }
+                   },
+                 child: Text('+1 sec'),
+                ),
+                SizedBox(width: 10), // Add spacing between buttons
+                ElevatedButton(
+                  onPressed: () {
+                     if (!isCountingDown) {
+                    setState(() {
+                      _adjustTimer(60); // add 1 minute
+                       });
+                    }
+                  },
+                child: Text('+1 min'),
+                    )],
+                  ),
+                ),
           // Position the "Riding Time" Text below the main clock
           Positioned(
             top: MediaQuery.of(context).size.height / 4,
