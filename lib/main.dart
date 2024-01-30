@@ -146,7 +146,9 @@ class _TimerPageState extends State<TimerPage> {
                     }
                 },
               child: Text('-1 min'),
+              
                 ),
+                
                 SizedBox(width: 10), // Add spacing between buttons
                 ElevatedButton(
                   onPressed: () {
@@ -169,6 +171,7 @@ class _TimerPageState extends State<TimerPage> {
                    },
                  child: Text('+1 sec'),
                 ),
+                
                 SizedBox(width: 10), // Add spacing between buttons
                 ElevatedButton(
                   onPressed: () {
@@ -179,7 +182,19 @@ class _TimerPageState extends State<TimerPage> {
                     }
                   },
                 child: Text('+1 min'),
-                    )],
+                    ), 
+                    ElevatedButton(
+                      onPressed: () {
+                        if (!isCountingDown) {
+                          setState(() {
+                            _blueCounter = 0; // clear both scores
+                            _redCounter = 0;
+                       });
+                    }
+                },
+              child: Text('Clear Score'),
+                ),
+                    ],
                   ),
                 ),
           // Position the "Riding Time" Text below the main clock
@@ -209,7 +224,7 @@ class _TimerPageState extends State<TimerPage> {
                   style: TextStyle(
                     fontSize: 100.0,
                     color: _ridingTime < 0
-                        ? Colors.blue
+                        ? Colors.green
                         : (_ridingTime > 0 ? Colors.red : Colors.white),
                   ),
                 ),
@@ -227,7 +242,7 @@ class _TimerPageState extends State<TimerPage> {
                           }
                         });
                       },
-                      child: Text('Riding -'),
+                      child: Text('Riding Time Green'),
                     ),
                     SizedBox(width: 10), // Add some spacing between the buttons
                     ElevatedButton(
@@ -238,7 +253,7 @@ class _TimerPageState extends State<TimerPage> {
                           _countRidingTime = true;
                         });
                       },
-                      child: Text('Riding +'),
+                      child: Text('Riding Time Red'),
                     ),
                   ],
                 ),
@@ -295,7 +310,7 @@ class _TimerPageState extends State<TimerPage> {
             child: Container(
               height: MediaQuery.of(context).size.height / 2.2,
               width: MediaQuery.of(context).size.width / 2,
-              color: Colors.blue,
+              color: Colors.green,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -315,7 +330,7 @@ class _TimerPageState extends State<TimerPage> {
                             _blueCounter = max(0, _blueCounter - 1);
                           });
                         },
-                        child: Text('Blue-'),
+                        child: Text('Green-'),
                       ),
                       SizedBox(
                           width: 10), // Add some spacing between the buttons
@@ -325,10 +340,43 @@ class _TimerPageState extends State<TimerPage> {
                             _blueCounter++;
                           });
                         },
-                        child: Text('Blue+'),
+                        child: Text('Green+'),
                       ),
                     ],
                   ),
+                      SizedBox(height: 20), // Add some spacing between the score and the new buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          _blueCounter+= 3;
+                          _isRidingTimeCountingDown = true;
+                          _countRidingTime = true;
+                      },
+                        child: Text('Takedown'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _blueCounter+= 2;
+                            
+                            _isRidingTimeCountingDown = true;
+                            _countRidingTime = true;
+
+                      },
+                      child: Text('Reversal'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                        _blueCounter++;
+                          _isRidingTimeCountingDown = false;
+                          _countRidingTime = false;
+                      },
+                       child: Text('Escape'),
+                    ),
+                  ],
+                ),
+      
                 ],
               ),
             ),
@@ -374,6 +422,40 @@ class _TimerPageState extends State<TimerPage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20), // Add some spacing between the score and the new buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          _redCounter+= 3;
+                           _isRidingTimeCountingDown = false;
+                          _ridingTime++;
+                          _countRidingTime = true;
+
+                      },
+                      child: Text('Takedown'),
+                    ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _isRidingTimeCountingDown = false;
+                          _ridingTime++;
+                          _countRidingTime = true;
+
+                      },
+                      child: Text('Reversal'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                         _redCounter++;
+                         _isRidingTimeCountingDown = false;
+                         _countRidingTime = false;
+
+                     },
+                     child: Text('Escape'),
+                   ),
+                  ],
+                ),
                 ],
               ),
             ),
