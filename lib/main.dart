@@ -429,8 +429,8 @@ class _TimerPageState extends State<TimerPage> {
                       ElevatedButton(
                         onPressed: () {
                           _redCounter+= 3;
+                           _ridingTime++;
                            _isRidingTimeCountingDown = false;
-                          _ridingTime++;
                           _countRidingTime = true;
 
                       },
@@ -438,8 +438,9 @@ class _TimerPageState extends State<TimerPage> {
                     ),
                       ElevatedButton(
                         onPressed: () {
-                          _isRidingTimeCountingDown = false;
+                          _redCounter+= 2;
                           _ridingTime++;
+                          _isRidingTimeCountingDown = false;
                           _countRidingTime = true;
 
                       },
