@@ -34,6 +34,85 @@ class _TimerPageState extends State<TimerPage> {
   bool _isRidingTimeCountingDown = false;
   bool _countRidingTime = false;
 
+  // Blood time variables
+  late Timer _bloodTimeTimer;
+  int _bloodTimeCounter = 300; // 5 minutes in seconds
+  bool isBloodTimeActive = false;
+
+  // Injury time variables
+  late Timer _redInjuryTimer;
+  late Timer _greenInjuryTimer;
+  int _redInjuryTimeCounter = 90; // 90 seconds for red injury time
+  int _greenInjuryTimeCounter = 90; // 90 seconds for green injury time
+  bool isRedInjuryTimeActive = false;
+  bool isGreenInjuryTimeActive = false;
+   
+   void runRedInjuryTime() {
+    const oneSec = Duration(seconds: 1);
+    _redInjuryTimer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        setState(() {
+          if (_redInjuryTimeCounter == 0) {
+            timer.cancel();
+            isRedInjuryTimeActive = false; // Reset injury time when it reaches zero
+          } else {
+            _redInjuryTimeCounter--;
+          }
+        });
+      },
+    );
+  }
+
+  
+
+  void runGreenInjuryTime() {
+    const oneSec = Duration(seconds: 1);
+    _greenInjuryTimer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        setState(() {
+          if (_greenInjuryTimeCounter == 0) {
+            timer.cancel();
+            isGreenInjuryTimeActive = false; // Reset injury time when it reaches zero
+          } else {
+            _greenInjuryTimeCounter--;
+          }
+        });
+      },
+    );
+  }
+
+  // Toggle Red Injury Time
+  void toggleRedInjuryTime() {
+    if (isRedInjuryTimeActive) {
+      _redInjuryTimer.cancel(); // Stop the timer if it's active
+      setState(() {
+        isRedInjuryTimeActive = false; // Mark as inactive
+      });
+    } else {
+      runRedInjuryTime(); // Start red injury time
+      setState(() {
+        isRedInjuryTimeActive = true; // Mark as active
+      });
+    }
+  }
+
+  // Toggle Green Injury Time
+  void toggleGreenInjuryTime() {
+    if (isGreenInjuryTimeActive) {
+      _greenInjuryTimer.cancel(); // Stop the timer if it's active
+      setState(() {
+        isGreenInjuryTimeActive = false; // Mark as inactive
+      });
+    } else {
+      runGreenInjuryTime(); // Start green injury time
+      setState(() {
+        isGreenInjuryTimeActive = true; // Mark as active
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -93,6 +172,40 @@ class _TimerPageState extends State<TimerPage> {
       ),
     );
   }
+
+   void runBloodTime() {
+    const oneSec = Duration(seconds: 1);
+    _bloodTimeTimer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        setState(() {
+          if (_bloodTimeCounter == 0) {
+            timer.cancel();
+            isBloodTimeActive = false; // Reset blood time when it reaches zero
+          } else {
+            _bloodTimeCounter--;
+          }
+        });
+      },
+    );
+  }
+
+   void toggleBloodTime() {
+    if (isBloodTimeActive) {
+      _bloodTimeTimer.cancel(); // Stop the timer if it's active
+      setState(() {
+        _bloodTimeCounter = 300; // Reset to 5 minutes
+        isBloodTimeActive = false;
+      });
+    } else {
+      runBloodTime(); // Start blood time
+      setState(() {
+        isBloodTimeActive = true;
+      });
+    }
+  }
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -197,6 +310,28 @@ class _TimerPageState extends State<TimerPage> {
                     ],
                   ),
                 ),
+                // Blood Time Button
+          Positioned(
+            top: 5,
+            right: MediaQuery.of(context).size.width / 40,
+            child: ElevatedButton(
+              onPressed: toggleBloodTime,
+              child: Text('Blood Time'),
+            ),
+          ),
+          // Display Blood Time if active
+          if (isBloodTimeActive)
+            Positioned(
+              top: 40,
+              right: MediaQuery.of(context).size.width / 40,
+              child: Text(
+                formatTime(_bloodTimeCounter),
+                style: TextStyle(
+                  fontSize: 50.0,
+                  color: Colors.white,
+                ),
+              ),
+            ),
           // Position the "Riding Time" Text below the main clock
           Positioned(
             top: MediaQuery.of(context).size.height / 4,
@@ -295,92 +430,99 @@ class _TimerPageState extends State<TimerPage> {
           ),
           // Draw a white line vertically from the center of the app to the bottom
           Positioned(
-            top: MediaQuery.of(context).size.height / 1.8,
-            left: MediaQuery.of(context).size.width / 2,
-            child: Container(
-              height: MediaQuery.of(context).size.height / 2.2,
-              width: 1.0,
+  bottom: 0,
+  left: 0,
+  child: Container(
+    height: MediaQuery.of(context).size.height / 2.2,
+    width: MediaQuery.of(context).size.width / 2,
+    color: Colors.green,
+    child: Stack( // Use Stack to position the injury time button
+      children: <Widget>[
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (isGreenInjuryTimeActive)
+          Text(
+            formatTime(_greenInjuryTimeCounter),
+            style: TextStyle(
+              fontSize: 40.0,
               color: Colors.white,
             ),
           ),
-          // Create the bottom left quadrant (blue)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height / 2.2,
-              width: MediaQuery.of(context).size.width / 2,
-              color: Colors.green,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    '$_blueCounter',
-                    style: TextStyle(
-                      fontSize: 200.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _blueCounter = max(0, _blueCounter - 1);
-                          });
-                        },
-                        child: Text('Green-'),
-                      ),
-                      SizedBox(
-                          width: 10), // Add some spacing between the buttons
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _blueCounter++;
-                          });
-                        },
-                        child: Text('Green+'),
-                      ),
-                    ],
-                  ),
-                      SizedBox(height: 20), // Add some spacing between the score and the new buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                      ElevatedButton(
-                        onPressed: () {
-                          _blueCounter+= 3;
-                          _isRidingTimeCountingDown = true;
-                          _countRidingTime = true;
-                      },
-                        child: Text('Takedown'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _blueCounter+= 2;
-                            
-                            _isRidingTimeCountingDown = true;
-                            _countRidingTime = true;
-
-                      },
-                      child: Text('Reversal'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                        _blueCounter++;
-                          _isRidingTimeCountingDown = false;
-                          _countRidingTime = false;
-                      },
-                       child: Text('Escape'),
-                    ),
-                  ],
-                ),
-      
-                ],
+            Text(
+              '$_blueCounter',
+              style: TextStyle(
+                fontSize: 200.0,
+                color: Colors.white,
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _blueCounter = max(0, _blueCounter - 1);
+                    });
+                  },
+                  child: Text('Green-'),
+                ),
+                SizedBox(width: 10), // Add some spacing between the buttons
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _blueCounter++;
+                    });
+                  },
+                  child: Text('Green+'),
+                ),
+              ],
+            ),
+            SizedBox(height: 20), // Add some spacing between the score and the new buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    _blueCounter += 3;
+                    _isRidingTimeCountingDown = true;
+                    _countRidingTime = true;
+                  },
+                  child: Text('Takedown'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _blueCounter += 2;
+                    _isRidingTimeCountingDown = true;
+                    _countRidingTime = true;
+                  },
+                  child: Text('Reversal'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _blueCounter++;
+                    _isRidingTimeCountingDown = false;
+                    _countRidingTime = false;
+                  },
+                  child: Text('Escape'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        // Injury Time Button in the top left of the green quadrant
+        Positioned(
+          top: 10,
+          left: 10,
+          child: ElevatedButton(
+            onPressed: toggleGreenInjuryTime, // Toggle injury time for green
+            child: Text(isGreenInjuryTimeActive ? 'Stop Green Injury Time' : 'Start Green Injury Time'),
           ),
+        ),
+      ],
+    ),
+  ),
+),
           // Create the bottom right quadrant (red)
           Positioned(
             bottom: 0,
@@ -392,6 +534,16 @@ class _TimerPageState extends State<TimerPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                   // Add injury time display for Red
+                  // Conditionally display injury time for Red
+        if (isRedInjuryTimeActive)
+          Text(
+            formatTime(_redInjuryTimeCounter),
+            style: TextStyle(
+              fontSize: 40.0,
+              color: Colors.white,
+            ),
+          ),
                   Text(
                     '$_redCounter',
                     style: TextStyle(
@@ -459,8 +611,18 @@ class _TimerPageState extends State<TimerPage> {
                 ),
                 ],
               ),
+              
             ),
           ),
+          // Injury Time Button in the top right of the red quadrant
+        Positioned(
+          top: 540,
+          right: 10,
+          child: ElevatedButton(
+            onPressed: toggleRedInjuryTime, // Toggle injury time for red
+            child: Text(isRedInjuryTimeActive ? 'Stop Red Injury Time' : 'Start Red Injury Time'),
+          ),
+        ),
         ],
       ),
     );
