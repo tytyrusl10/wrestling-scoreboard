@@ -26,7 +26,7 @@ class TimerPage extends StatefulWidget {
 
 class _TimerPageState extends State<TimerPage> {
   late Timer _timer;
-  int _counter = 420; // 7 minutes in seconds
+  int _counter = 180; // 7 minutes in seconds
   bool isCountingDown = false;
   int _blueCounter = 0;
   int _redCounter = 0;
@@ -245,7 +245,9 @@ class _TimerPageState extends State<TimerPage> {
                 ElevatedButton(
                   onPressed: () {
                     isCountingDown = false;
-                    _counter = 420; // 7 minutes
+                    _counter = 180; // 7 minutes
+                    _redInjuryTimeCounter = 90; // 90 seconds for red injury time
+                    _greenInjuryTimeCounter = 90;
                     runClock("clock");
                   },
                   child: Text('Reset Clock'),
